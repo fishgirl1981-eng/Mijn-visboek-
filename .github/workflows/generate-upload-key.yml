@@ -1,1 +1,35 @@
+name: Generate Mijn Visboek Upload Key
 
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Generate upload key
+        env:
+          STORE_PASSWORD: ${{ secrets.UPLOAD_KEYSTORE_PASSWORD }}
+        run: |
+          mkdir -p signing
+          keytool -genkeypair \
+            -v \
+            -keystore signing/mijn-visboek-upload.jks \
+            -storepass "$STORE_PASSWORD" \
+            -keypass "$STORE_PASSWORD" \
+            -alias mijnvisboek \
+            -keyalg RSA \
+            -keysize 2048 \
+            -validity 10000 \
+            -dname "CN=Mijn Visboek, OU=Apps, O=Fishing Dreams, L=Waregem, C=BE"
+
+      - name: Save upload key
+        uses: actions/upload-artifact@v4
+        with:
+          name: mijn-visboek-upload-key
+          path: signing/mijn-visboek-upload.jks
+          retention-days: 90
