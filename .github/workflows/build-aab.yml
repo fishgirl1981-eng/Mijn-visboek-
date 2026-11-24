@@ -53,7 +53,7 @@ jobs:
         env:
           STORE_PASSWORD: ${{ secrets.UPLOAD_KEYSTORE_PASSWORD }}
         run: |
-          cp ../signing/mijn-visboek-upload.jks upload-keystore.jks
+          cp ../signing/mijn-visboek-upload.jks app/upload-keystore.jks
           cat >> app/build.gradle <<'EOF'
 
           android {
